@@ -1,0 +1,20 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/restify-382711/restify-react-image', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/restify-382711/restify-react-image']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'beta'
+  - 'run'
+  - 'deploy'
+  - 'your-service-name'
+  - '--image'
+  - 'gcr.io/restify-382711/restify-react-image'
+  - '--platform'
+  - 'managed'
+  - '--region'
+  - 'us-central1'
+  - '--allow-unauthenticated'
+images:
+- 'gcr.io/$PROJECT_ID/restify-react-image'
