@@ -8,7 +8,7 @@ steps:
   - 'beta'
   - 'run'
   - 'deploy'
-  - 'your-service-name'
+  - 'restift-react'
   - '--image'
   - 'gcr.io/restify-382711/restify-react-image'
   - '--platform'
