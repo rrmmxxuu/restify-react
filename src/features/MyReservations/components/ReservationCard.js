@@ -1,5 +1,7 @@
 import {Card, Tooltip} from 'antd';
 import {CloseOutlined, EyeOutlined} from '@ant-design/icons';
+import {formatDate} from "../../../utils/format_date";
+import React from "react";
 
 const {Meta} = Card;
 export const ReservationCard = ({property, reservation, cardStyle, onView, onDelete}) => {
@@ -34,6 +36,8 @@ export const ReservationCard = ({property, reservation, cardStyle, onView, onDel
                         End Date: {reservation.end_date}
                         <br/>
                         Status: {reservation.status}
+                        <br/>
+                        Updated at: {formatDate(reservation.updated_at)}
                     </>
                 }
             />

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Card, Tooltip} from 'antd';
 import {CheckOutlined, CloseOutlined, EyeOutlined} from '@ant-design/icons';
+import {formatDate} from "../../../utils/format_date";
 
 const {Meta} = Card;
 export const PropertyReservationCard = ({property, reservation, cardStyle, onView, onCheck, onClose}) => {
@@ -24,7 +25,7 @@ export const PropertyReservationCard = ({property, reservation, cardStyle, onVie
 
     if (reservation.status === 'Approved') {
         actions.push(
-            <Tooltip title="Accept">
+            <Tooltip title="Complete">
                 <CheckOutlined key="check" onClick={() => onCheck(reservation.id)}/>
             </Tooltip>,
             <Tooltip title="Terminate">
@@ -49,6 +50,8 @@ export const PropertyReservationCard = ({property, reservation, cardStyle, onVie
                         End Date: {reservation.end_date}
                         <br/>
                         Status: {reservation.status}
+                        <br/>
+                        Updated at: {formatDate(reservation.updated_at)}
                     </>
                 }
             />

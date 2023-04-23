@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Col, Divider, Empty, Grid, message, Modal, Radio, Row, Typography} from 'antd';
+import {Col, Divider, Empty, Grid, message, Modal, Radio, Row, Select, Skeleton, Typography} from 'antd';
 import {ReservationDetails} from "./components/ReservationDetails";
 import {ReservationCard} from './components/ReservationCard';
 import {AddReservationForm} from "./components/AddReservationForm";
@@ -23,15 +23,34 @@ const MyReservations = () => {
     const [properties, setProperties] = useState([]);
     const [propertyReservations, setPropertyReservations] = useState([]);
     const [resolvedProperties, setResolvedProperties] = useState([]);
+    const [combinedReservations, setCombinedReservations] = useState([]);
     const [selectedReservation, setSelectedReservation] = useState(null);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [filterStatus, setFilterStatus] = useState('all');
+    const [sortOrder, setSortOrder] = useState('desc');
+    const [loading, setLoading] = useState(true);
     const screens = Grid.useBreakpoint
-    const filterReservations = (reservations) => {
-        return filterStatus === 'all'
-            ? reservations
-            : reservations.filter(reservation => reservation.status === filterStatus)
+
+    const filterReservations = (combinedReservations) => {
+        const filteredReservations = filterStatus === 'all'
+            ? combinedReservations
+            : combinedReservations.filter(({reservation}) => reservation && reservation.status === filterStatus);
+
+        return sortOrder === 'desc'
+            ? filteredReservations.sort((a, b) => a.reservation && b.reservation ? new Date(b.reservation.updated_at) - new Date(a.reservation.updated_at) : 0)
+            : filteredReservations.sort((a, b) => a.reservation && b.reservation ? new Date(a.reservation.updated_at) - new Date(b.reservation.updated_at) : 0);
     };
+
+    const filterPropertyReservations = (propertyReservations) => {
+    const filteredPropertyReservations = filterStatus === 'all'
+        ? propertyReservations
+        : propertyReservations.filter((reservation) => reservation.status === filterStatus);
+
+    return sortOrder === 'desc'
+        ? filteredPropertyReservations.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+        : filteredPropertyReservations.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+};
+
 
 
     useAuthRedirect(isAuthed)
@@ -41,6 +60,7 @@ const MyReservations = () => {
             const token = await isAuthed()
             const fetchedReservations = await getMyReservations(token);
             setReservations(fetchedReservations);
+            setLoading(false);
         };
         fetchReservations();
 
@@ -54,6 +74,7 @@ const MyReservations = () => {
             if (fetchedProperties !== false) {
                 setProperties(fetchedProperties);
             }
+            setLoading(false);
         };
         fetchProperties();
     }, []);
@@ -76,12 +97,25 @@ const MyReservations = () => {
 
 
     useEffect(() => {
+        Promise.all(
+            reservations.map(async (reservation) => {
+                const property = await handleSelectedProperty(reservation.property);
+                return {reservation, property};
+            })
+        ).then((combined) => {
+            setCombinedReservations(combined);
+        });
+    }, [reservations]);
+
+    useEffect(() => {
         Promise.all(reservations.map((reservation) => {
             return handleSelectedProperty(reservation.property);
         })).then(props => {
             setResolvedProperties(props);
         });
     }, [reservations]);
+
+
 
     const viewBooking = (reservationId, propertyID) => {
         const reservation = reservations.find((p) => p.id === reservationId);
@@ -93,11 +127,10 @@ const MyReservations = () => {
 
     function findReservation(reservationsArray, id) {
         for (let i = 0; i < reservationsArray.length; i++) {
-            for (let j = 0; j < reservationsArray[i].length; j++) {
-                if (reservationsArray[i][j].id === id) {
-                    return reservationsArray[i][j];
-                }
+            if (reservationsArray[i].id === id) {
+                return reservationsArray[i];
             }
+
         }
         return null;
     }
@@ -219,38 +252,55 @@ const MyReservations = () => {
                         <Col span={24}>
                             <Title level={3} style={{
                                 textAlign: screens.md ? 'center' : 'center',
-                                paddingLeft: screens.md ? "30px" : 0
+                                paddingLeft: screens.md ? "30px" : 0,
+                                paddingBottom: "20px"
                             }}>
                                 My Reservations
                             </Title>
                         </Col>
-                        <Col span={24} style={{textAlign: 'center'}}>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
                             <Radio.Group
                                 value={filterStatus}
                                 onChange={(e) => setFilterStatus(e.target.value)}
-                                style={{display: 'flex', justifyContent: 'center'}}
                             >
                                 <Radio.Button value="all">All</Radio.Button>
                                 <Radio.Button value="Completed">Completed</Radio.Button>
                                 <Radio.Button value="Pending">Pending</Radio.Button>
-                                <Radio.Button value="Accepted">Accepted</Radio.Button>
+                                <Radio.Button value="Approved">Approved</Radio.Button>
                             </Radio.Group>
+                        </Col>
+                        <Col span={12} style={{textAlign: 'right'}}>
+                            <Select
+                                defaultValue="desc"
+                                style={{width: 130}}
+                                onChange={(value) => setSortOrder(value)}
+                            >
+                                <Select.Option value="desc">Newest First</Select.Option>
+                                <Select.Option value="asc">Oldest First</Select.Option>
+                            </Select>
                         </Col>
                     </Row>
 
                     <Divider>
-                        <Title level={4} style={{textAlign: 'center'}}>
+                        <Title level={4} style={{textAlign: 'center', paddingTop: "20px"}}>
                             My Bookings
                         </Title>
                     </Divider>
                     <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-                        {reservations.length > 0 ? (
-                            filterReservations(reservations).length > 0 ? (
-                                filterReservations(reservations).map((reservation, index) => (
+{loading ? (
+    <Col span={24}>
+      <Skeleton active />
+    </Col>
+  ) : (
+                        combinedReservations.length > 0 ? (
+                            filterReservations(combinedReservations).length > 0 ? (
+                                filterReservations(combinedReservations).map(({reservation, property}) => (
                                     <Col key={reservation.id} xs={24} sm={24} md={12} lg={8} xl={8}>
-                                        {resolvedProperties[index] && (
+                                        {property && (
                                             <ReservationCard
-                                                property={resolvedProperties[index]}
+                                                property={property}
                                                 reservation={reservation}
                                                 onView={viewBooking}
                                                 onDelete={deleteBooking}
@@ -267,17 +317,23 @@ const MyReservations = () => {
                             <Col span={24} style={{textAlign: 'center'}}>
                                 <Empty/>
                             </Col>
-                        )}
+                        ))}
                     </Row>
+
                     <Divider>
                         <Title level={4} style={{textAlign: 'center'}}>
                             My Properties' Reservations
                         </Title>
                     </Divider>
+                    {loading ? (
+    <Col span={24}>
+      <Skeleton active />
+    </Col>
+  ) : (
                     <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
                         {
                             (() => {
-                                const filteredPropertyReservations = filterReservations(propertyReservations);
+                                const filteredPropertyReservations = filterPropertyReservations(propertyReservations);
 
                                 return filteredPropertyReservations.length > 0 ? (
                                     filteredPropertyReservations.map((reservation) => {
@@ -303,7 +359,7 @@ const MyReservations = () => {
                                 )
                             })()
                         }
-                    </Row>
+                    </Row>)}
                 </>
             )}
 

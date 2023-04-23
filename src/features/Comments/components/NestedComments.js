@@ -175,7 +175,7 @@ const NestedComments = ({comments}) => {
                     );
                 }
             }
-            return (
+            return  (
                 <Comment
                     key={comment.id}
                     author={`${comment.firstName} ${comment.lastName}`}
