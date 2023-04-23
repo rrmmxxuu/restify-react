@@ -117,7 +117,7 @@ const NestedComments = ({comments}) => {
             // Call fetchUserInfoAndUpdateComments() to refresh the comment list after creating the new comment
             setReplyingToComment(null);
             setReplyCommentContent("");
-            sendNotification(token, lastComment.user, "You got one new comment for your property!")
+            sendNotification(token, lastComment.user, "You got one new comment!")
             message.success("Successfully replied a comment!")
             setTimeout(() => {
             window.location.reload()
