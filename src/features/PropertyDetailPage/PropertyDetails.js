@@ -253,11 +253,11 @@ const PropertyDetails = ({property}) => {
                 </Carousel>
             </div>
             <Divider>
-                <Title level={3}> Comments </Title>
+                <Title level={3}> Reviews & Comments </Title>
             </Divider>
             <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-                {comments.length > 0 && comments.map((comment) => (
-
+                {comments.length > 0 ? (
+                    comments.map((comment) => (
                         <Col key={comment.id} xs={24} sm={24} md={12} lg={8} xl={8}>
                             <PropertyCommentBlock
                                 key={comment.id}
@@ -265,9 +265,17 @@ const PropertyDetails = ({property}) => {
                                 style={{width: '100%'}}
                             />
                         </Col>
-                    )
+                    ))
+                ) : (
+                    <Col span={24}>
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={"No reviews or comments yet."}
+                        />
+                    </Col>
                 )}
             </Row>
+
         </>
     );
 };

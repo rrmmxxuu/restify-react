@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Divider, Grid, message, Modal, Row, Typography} from 'antd';
+import {Button, Col, Divider, Empty, Grid, message, Modal, Row, Typography} from 'antd';
 import {MyPropertyDetails} from "./components/MyPropertyDetails";
 import {EditPropertyForm} from "./components/EditPropertyForm";
 import {PropertyCard} from './components/PropertyCard';
@@ -88,17 +88,27 @@ const MyProperties = () => {
                     </Row>
                     <Divider/>
                     <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-                        {properties.map((property) => (
-                            <Col key={property.property_id} xs={24} sm={24} md={12} lg={8} xl={8}>
-                                <PropertyCard
-                                    property={property}
-                                    onView={viewProperty}
-                                    onEdit={editProperty}
-                                    onDelete={deleteProperty}
+                        {properties.length > 0 ? (
+                            properties.map((property) => (
+                                <Col key={property.property_id} xs={24} sm={24} md={12} lg={8} xl={8}>
+                                    <PropertyCard
+                                        property={property}
+                                        onView={viewProperty}
+                                        onEdit={editProperty}
+                                        onDelete={deleteProperty}
+                                    />
+                                </Col>
+                            ))
+                        ) : (
+                            <Col span={24}>
+                                <Empty
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                    description={"No properties yet."}
                                 />
                             </Col>
-                        ))}
+                        )}
                     </Row>
+
                 </>
             )}
 
