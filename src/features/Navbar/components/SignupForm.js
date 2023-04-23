@@ -33,7 +33,7 @@ const SignUpForm = ({onSignupSuccess}) => {
     const onSubmit = (values) => {
         setLoading(true)
         signup(values.email, values.firstName, values.lastName, values.password)
-            .then((response) => {
+            .then(() => {
                 message.success("Signup Successful", 5)
                 setTimeout(() => {
                     onSignupSuccess()
@@ -112,7 +112,7 @@ const SignUpForm = ({onSignupSuccess}) => {
                             if (regex.test(value)) {
                                 return Promise.resolve();
                             } else {
-                                return Promise.reject(new Error('Password must have at least one uppercase letter, one lowercase letter, one digit, and one special character.'));
+                                return Promise.reject(new Error('Password must have at least one uppercase letter, one lowercase letter, one digit, and one special character including @$!%*?&'));
                             }
                         },
                     },

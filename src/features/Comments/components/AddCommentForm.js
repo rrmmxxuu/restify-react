@@ -13,10 +13,8 @@ const AddCommentForm = ({reservationID, property}) => {
 
         if (values.rating) {
             const rating = values.rating
-            console.log(Math.round(rating))
             values.rating = Math.round(rating)
         }
-        console.log(values)
 
         return createComments(token, reservationID, values)
             .then(() => {
@@ -38,7 +36,7 @@ const AddCommentForm = ({reservationID, property}) => {
                 <TextArea rows={4} placeholder="Comments"/>
             </Form.Item>
             <Form.Item name="rating" rules={[{required: true, message: 'Please rate this reservation!'}]}>
-                <Rate defaultValue={3} allowHalf={true} count={5} allowClear={false}/>
+                <Rate allowHalf={false} count={5} allowClear={false}/>
             </Form.Item>
             <Form.Item>
                 <Button htmlType="submit" type="primary">

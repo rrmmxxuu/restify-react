@@ -195,7 +195,16 @@ export const AddPropertyForm = ({onDiscard}) => {
                 <Form.Item
                     label="Price"
                     name="price"
-                    rules={[{required: true, message: 'Please enter the price'},
+                    rules={[
+                        {required: true, message: 'Please enter the price'},
+                        {
+                            validator: (_, value) => {
+                                if (value >= 0) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject('Price cannot be negative');
+                            },
+                        },
                     ]}
                 >
                     <InputNumber prefix="CAD $" step={1} style={{width: '100%'}}/>

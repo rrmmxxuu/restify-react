@@ -4,13 +4,17 @@ import {createMappingObject, provinceChoices} from "../../../utils/constants";
 import {getReservationComments} from "../../../services/comment";
 import NestedComments from "../../Comments/components/NestedComments";
 import AddCommentForm from "../../Comments/components/AddCommentForm";
+import {isAuthed} from "../../../services/auth";
+import {getUserInfo} from "../../../services/user";
 
 const {Title} = Typography;
+const {Text} = Typography;
 
 export const ReservationDetails = ({property, reservation, goBack}) => {
 
     const [comments, setComments] = useState([])
     const [refreshKey, setRefreshKey] = useState(0);
+    const [currentUserID, setCurrentUserID] = useState(null)
     const PROVINCE_CHOICES = provinceChoices()
     const provinceMapping = createMappingObject(PROVINCE_CHOICES)
     const screens = Grid.useBreakpoint()
@@ -22,6 +26,15 @@ export const ReservationDetails = ({property, reservation, goBack}) => {
                 setComments(fetchedComments);
             }
         };
+
+        const getCurrentUser = async () => {
+            const token = await isAuthed()
+            const user = await getUserInfo(token)
+            setCurrentUserID(user.id)
+        }
+
+
+        getCurrentUser();
         fetchComments();
 
     }, [reservation.id]);
@@ -94,9 +107,12 @@ export const ReservationDetails = ({property, reservation, goBack}) => {
 
                     {comments.length > 0 ? (
                         <NestedComments comments={comments} key={refreshKey} forceRemount={forceRemount}/>
+                    ) : currentUserID === property.owner ? (
+                        <Text>No comments yet, as the owner you cannot add a comment.</Text>
                     ) : (
                         <AddCommentForm reservationID={reservation.id} property={property}/>
                     )}
+
                 </>
             )}
 
