@@ -6,7 +6,6 @@ const COMMENTS_API_URL = API_BASE_URL() + '/api/comments';
 export const getReservationComments = (async (reservationID) => {
     try {
         const response = await axios.get(COMMENTS_API_URL + '/details/' + reservationID,);
-        console.log(response.data);
         return response.data
     } catch (error) {
         console.error(error)
@@ -18,7 +17,6 @@ export const getComment = (async (commentID) => {
     try {
         const response = await axios.get(COMMENTS_API_URL + '/get/' + commentID,
             )
-        console.log(response.data)
         return response.data
     } catch (error) {
         console.error(error)
@@ -29,7 +27,6 @@ export const getComment = (async (commentID) => {
 export const getPropertyComments = (async (property_id) => {
     try {
         const response = await axios.get(COMMENTS_API_URL + '/property/' + property_id,);
-        console.log(response.data);
         return response.data
     } catch (error) {
         console.error(error)
@@ -45,7 +42,6 @@ export const createComments = (async (token, reservationID, comment) => {
                 "Content-Type": "multipart/form-data"
             },
         }, {timeout: 5000});
-        console.log(response.data)
         return response.data
     } catch (error) {
         console.error("Error creating Comments", error)
@@ -62,7 +58,6 @@ export const updateComment = (async (token, comment) => {
                 "Content-Type": "multipart/form-data"
             },
         },)
-        console.log(response.data)
         return response.data
     } catch (error) {
         console.error(error)
@@ -72,12 +67,11 @@ export const updateComment = (async (token, comment) => {
 
 export const deleteComment = (async (token, CommentID) => {
     try {
-        const response = await axios.delete(COMMENTS_API_URL + '/UD/' + CommentID, {
+        await axios.delete(COMMENTS_API_URL + '/UD/' + CommentID, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         },)
-        console.log(response)
         return true
     } catch (error) {
         console.error(error)

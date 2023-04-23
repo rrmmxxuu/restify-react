@@ -42,15 +42,14 @@ const MyReservations = () => {
     };
 
     const filterPropertyReservations = (propertyReservations) => {
-    const filteredPropertyReservations = filterStatus === 'all'
-        ? propertyReservations
-        : propertyReservations.filter((reservation) => reservation.status === filterStatus);
+        const filteredPropertyReservations = filterStatus === 'all'
+            ? propertyReservations
+            : propertyReservations.filter((reservation) => reservation.status === filterStatus);
 
-    return sortOrder === 'desc'
-        ? filteredPropertyReservations.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-        : filteredPropertyReservations.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
-};
-
+        return sortOrder === 'desc'
+            ? filteredPropertyReservations.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            : filteredPropertyReservations.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+    };
 
 
     useAuthRedirect(isAuthed)
@@ -116,7 +115,6 @@ const MyReservations = () => {
     }, [reservations]);
 
 
-
     const viewBooking = (reservationId, propertyID) => {
         const reservation = reservations.find((p) => p.id === reservationId);
         const property = resolvedProperties.find((p) => p.property_id === propertyID);
@@ -163,9 +161,16 @@ const MyReservations = () => {
             const token = await isAuthed()
             return updateReservation(token, values)
                 .then(async () => {
-                    message.success("Successfully approved a reservations!")
-                    const tenant = values.tenant;
-                    await sendNotification(token, tenant, "You got a booking approved!")
+                    if (values.status === "Pending") {
+                        message.success("Successfully approved a reservations!")
+                        const tenant = values.tenant;
+                        await sendNotification(token, tenant, "You got a booking approved!")
+                    } else {
+                        message.success("Successfully complete a reservations!")
+                        const tenant = values.tenant;
+                        await sendNotification(token, tenant, "You got a booking completed!")
+                    }
+
                 })
                 .catch((error) => {
                     message.error("Something went wrong... Please try again later")
@@ -289,35 +294,35 @@ const MyReservations = () => {
                         </Title>
                     </Divider>
                     <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-{loading ? (
-    <Col span={24}>
-      <Skeleton active />
-    </Col>
-  ) : (
-                        combinedReservations.length > 0 ? (
-                            filterReservations(combinedReservations).length > 0 ? (
-                                filterReservations(combinedReservations).map(({reservation, property}) => (
-                                    <Col key={reservation.id} xs={24} sm={24} md={12} lg={8} xl={8}>
-                                        {property && (
-                                            <ReservationCard
-                                                property={property}
-                                                reservation={reservation}
-                                                onView={viewBooking}
-                                                onDelete={deleteBooking}
-                                            />
-                                        )}
+                        {loading ? (
+                            <Col span={24}>
+                                <Skeleton active/>
+                            </Col>
+                        ) : (
+                            combinedReservations.length > 0 ? (
+                                filterReservations(combinedReservations).length > 0 ? (
+                                    filterReservations(combinedReservations).map(({reservation, property}) => (
+                                        <Col key={reservation.id} xs={24} sm={24} md={12} lg={8} xl={8}>
+                                            {property && (
+                                                <ReservationCard
+                                                    property={property}
+                                                    reservation={reservation}
+                                                    onView={viewBooking}
+                                                    onDelete={deleteBooking}
+                                                />
+                                            )}
+                                        </Col>
+                                    ))
+                                ) : (
+                                    <Col span={24} style={{textAlign: 'center'}}>
+                                        <Empty/>
                                     </Col>
-                                ))
+                                )
                             ) : (
                                 <Col span={24} style={{textAlign: 'center'}}>
                                     <Empty/>
                                 </Col>
-                            )
-                        ) : (
-                            <Col span={24} style={{textAlign: 'center'}}>
-                                <Empty/>
-                            </Col>
-                        ))}
+                            ))}
                     </Row>
 
                     <Divider>
@@ -326,40 +331,40 @@ const MyReservations = () => {
                         </Title>
                     </Divider>
                     {loading ? (
-    <Col span={24}>
-      <Skeleton active />
-    </Col>
-  ) : (
-                    <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-                        {
-                            (() => {
-                                const filteredPropertyReservations = filterPropertyReservations(propertyReservations);
+                        <Col span={24}>
+                            <Skeleton active/>
+                        </Col>
+                    ) : (
+                        <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
+                            {
+                                (() => {
+                                    const filteredPropertyReservations = filterPropertyReservations(propertyReservations);
 
-                                return filteredPropertyReservations.length > 0 ? (
-                                    filteredPropertyReservations.map((reservation) => {
-                                        const property = properties.find(prop => prop.property_id === reservation.property);
-                                        return (
-                                            <Col key={reservation.id} xs={24} sm={24} md={12} lg={8} xl={8}>
-                                                {property && (
-                                                    <PropertyReservationCard
-                                                        property={property}
-                                                        reservation={reservation}
-                                                        onView={viewReservation}
-                                                        onCheck={checkReservation}
-                                                        onClose={closeReservation}
-                                                    />
-                                                )}
-                                            </Col>
-                                        );
-                                    })
-                                ) : (
-                                    <Col span={24} style={{textAlign: 'center'}}>
-                                        <Empty/>
-                                    </Col>
-                                )
-                            })()
-                        }
-                    </Row>)}
+                                    return filteredPropertyReservations.length > 0 ? (
+                                        filteredPropertyReservations.map((reservation) => {
+                                            const property = properties.find(prop => prop.property_id === reservation.property);
+                                            return (
+                                                <Col key={reservation.id} xs={24} sm={24} md={12} lg={8} xl={8}>
+                                                    {property && (
+                                                        <PropertyReservationCard
+                                                            property={property}
+                                                            reservation={reservation}
+                                                            onView={viewReservation}
+                                                            onCheck={checkReservation}
+                                                            onClose={closeReservation}
+                                                        />
+                                                    )}
+                                                </Col>
+                                            );
+                                        })
+                                    ) : (
+                                        <Col span={24} style={{textAlign: 'center'}}>
+                                            <Empty/>
+                                        </Col>
+                                    )
+                                })()
+                            }
+                        </Row>)}
                 </>
             )}
 

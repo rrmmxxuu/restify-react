@@ -46,7 +46,6 @@ const PropertyDetails = ({property}) => {
         const fetchOwnerInfo = async () => {
             const owner_id = property.owner
             const owner_info = await getUserInfoPublic(owner_id)
-            console.log(owner_info)
             setPropertyOwnerInfo(owner_info)
         }
         fetchOwnerInfo();
@@ -203,7 +202,7 @@ const PropertyDetails = ({property}) => {
                 </Col>
             </Row>
             <Divider>
-                 <Title level={3}> Property Information </Title>
+                <Title level={3}> Property Information </Title>
             </Divider>
             <Descriptions layout="horizontal" bordered column={screens.md ? 3 : 1}>
                 {info.map((item) => (
@@ -248,25 +247,27 @@ const PropertyDetails = ({property}) => {
                                 />
                             </div>
                         )) : <Empty
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                description={"No image uploaded"}
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={"No image uploaded"}
                         />}
                 </Carousel>
             </div>
             <Divider>
                 <Title level={3}> Comments </Title>
             </Divider>
-            {comments.length > 0 && comments.map((comment) => (
-                <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
-                    <Col key={comment.id} xs={24} sm={24} md={12} lg={8} xl={8}>
-                        <PropertyCommentBlock
-                            comment={comment}
-                            style={{width: '100%'}}
-                        />
-                    </Col>
-                </Row>)
-            )}
+            <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
+                {comments.length > 0 && comments.map((comment) => (
 
+                        <Col key={comment.id} xs={24} sm={24} md={12} lg={8} xl={8}>
+                            <PropertyCommentBlock
+                                key={comment.id}
+                                comment={comment}
+                                style={{width: '100%'}}
+                            />
+                        </Col>
+                    )
+                )}
+            </Row>
         </>
     );
 };
