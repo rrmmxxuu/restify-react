@@ -1,0 +1,67 @@
+.layout-index {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url("../../public/sky.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header-index {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    background-color: transparent;
+}
+
+.content-index {
+    flex: 1;
+    text-align: center;
+    align-items: center;
+    padding: 50px;
+    background-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-index{
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent gray background */
+    backdrop-filter: blur(5px); /* Adjust the blur value as needed */
+    position: relative;
+    z-index: 1;
+}
+
+.footer-index::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Move the pseudo-element behind the content */
+}
+
+.gradient-text span{
+  background-image: linear-gradient(to right, #FF0ADE, #AF34F7,  #FF0ADE,  #8921E0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  background-size: 300%;
+  background-position: -100%;
+
+  animation: animatedText 5s infinite alternate-reverse;
+}
+
+@keyframes animatedText{
+  to{
+    background-position: 100%;
+  }
+}
+

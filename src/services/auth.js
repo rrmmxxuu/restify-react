@@ -64,7 +64,7 @@ export const isAuthed = async () => {
             if (Object.keys(response.data).length === 0) {
                 return parsedToken;
             } else {
-                await refreshToken();
+                return await refreshToken();
             }
         } catch (error) {
             console.error(error);

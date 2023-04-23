@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Divider, message, Modal, Row, Typography} from 'antd';
+import {Button, Col, Divider, Grid, message, Modal, Row, Typography} from 'antd';
 import {MyPropertyDetails} from "./components/MyPropertyDetails";
 import {EditPropertyForm} from "./components/EditPropertyForm";
 import {PropertyCard} from './components/PropertyCard';
 import {AddPropertyForm} from "./components/AddPropertyForm";
 import {deleteMyProperty, getMyProperties} from "../../services/property";
 import {isAuthed} from "../../services/auth";
+import useAuthRedirect from "../../hooks/useAuthRedirect";
 
 const {Title} = Typography
 
@@ -14,6 +15,9 @@ const MyProperties = () => {
     const [properties, setProperties] = useState([]);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [activeView, setActiveView] = useState('list'); // list, details, edit
+    const screens = Grid.useBreakpoint
+
+    useAuthRedirect(isAuthed)
 
     useEffect(() => {
         const fetchProperties = async () => {
@@ -70,11 +74,18 @@ const MyProperties = () => {
     return (
         <>
             {activeView === 'list' && (
-                <><
-                    Title level={3} style={{marginTop: "40px"}}> My Properties </Title>
-                    <Button type="primary" onClick={handleAddProperty}>
-                        Add Property
-                    </Button>
+                <>
+                    <Row gutter={[0, {xs: 16, md: 0}]} style={{display: 'flex', justifyContent: 'center'}}>
+                        <Col xs={24} md={20}
+                             style={{textAlign: screens.md ? 'left' : 'center', paddingLeft: screens.md ? "30px" : 0}}>
+                            <Title level={3}>My Properties</Title>
+                        </Col>
+                        <Col xs={24} md={4} style={{textAlign: 'center', paddingRight: screens.md ? "30px" : 0}}>
+                            <Button type="primary" onClick={handleAddProperty}>
+                                Add Property
+                            </Button>
+                        </Col>
+                    </Row>
                     <Divider/>
                     <Row gutter={[24, 24]} style={{padding: '0 30px'}}>
                         {properties.map((property) => (

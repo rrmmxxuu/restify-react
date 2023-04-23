@@ -8,7 +8,7 @@ import "./placeholder.css"
 
 const {Option} = Select;
 
-const PropertySearchForm = ({onFinish}) => {
+const PropertySearchForm = ({onFinish, isLoading}) => {
     const PROVINCE_CHOICES = provinceChoices();
     const AMENITY_CHOICES = amenityChoices();
     const screens = Grid.useBreakpoint()
@@ -51,6 +51,7 @@ const PropertySearchForm = ({onFinish}) => {
                 <Col span={screens.md ? 8 : 24}>
                     <Form.Item
                         name="dateRange"
+                        initialValue={[dayjs(), dayjs().add(5, 'd')]}
                         rules={[
                                    {
                                        required: true,
@@ -60,7 +61,7 @@ const PropertySearchForm = ({onFinish}) => {
                     >
                         <DatePicker.RangePicker
                             style={{width: "100%"}}
-                            defaultValue={[dayjs(), dayjs().add(5, 'd')]}
+                            initialValue={[dayjs(), dayjs().add(5, 'd')]}
                             size="large"
                         />
                     </Form.Item>
@@ -95,6 +96,17 @@ const PropertySearchForm = ({onFinish}) => {
                     </Form.Item>
                 </Col>
             </Row>
+            <Row style={{ display: 'flex', justifyContent: 'center' }}>
+                <Col span={screens.md ? 4 : 24}>
+                    <Form.Item name="sortBy" initialValue="rate_high2low">
+                        <Select placeholder="Results order by" size="large">
+                            <Option value="price_low2high">Price: Low to High</Option>
+                            <Option value="price_high2low">Price: High to Low</Option>
+                            <Option value="rate_high2low">Rating: High to Low</Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
             <Row>
                 <Col span={24}>
                     <Form.Item>
@@ -103,8 +115,9 @@ const PropertySearchForm = ({onFinish}) => {
                                 shape="round"
                                 type="primary"
                                 htmlType="submit"
+                                loading={isLoading}
                                 style={{marginTop: "16px"}}>
-                            Search
+                            {isLoading ? "Searching..." : "Search"}
                         </Button>
                     </Form.Item>
                 </Col>

@@ -13,7 +13,6 @@ const NotificationIcon = () => {
         const fetchNotifications = async () => {
             const token = await isAuthed();
             const fetchedNotifications = await getNotification(token);
-            console.log(fetchedNotifications)
             setNotifications(fetchedNotifications);
         };
 

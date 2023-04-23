@@ -1,4 +1,4 @@
-import {Layout, Typography} from "antd";
+import {Col, Layout, message, Row, Typography} from "antd";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -6,7 +6,8 @@ import Navbar from "../features/Navbar/Navbar";
 import PropertySearchForm from "../features/IndexPage/PropertySearchForm";
 import {searchProperties} from "../services/property";
 
-import "./layout.css"
+import "./index.css"
+import "./particles_effects.css"
 import MyFooter from "../components/Footer";
 
 const {Title} = Typography
@@ -16,9 +17,12 @@ const IndexLayout = () => {
     const {Header, Footer, Content} = Layout;
 
     const [, setSearchResults] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const onFinish = async (values) => {
+        setIsLoading(true)
+
         let queryParams = new URLSearchParams();
 
         if (values.province) {
@@ -38,48 +42,81 @@ const IndexLayout = () => {
         }
         if (values.priceRange) {
             if (values.priceRange !== "inf") {
-                const [price_min, price_max] = values.priceRange.split("-");
-                queryParams.append("price_min", price_min);
-                if (price_max !== "+") {
+                if (values.priceRange !== "3000+") {
+                    const [price_min, price_max] = values.priceRange.split("-");
+                    queryParams.append("price_min", price_min);
                     queryParams.append("price_max", price_max);
+                } else {
+                    queryParams.append("price_min", 3000);
                 }
             }
         }
-        queryParams.append("limit", 3);
+        if (values.sortBy) {
+            queryParams.append("sort_by", values.sortBy)
+        }
+
+        queryParams.append("limit", 6);
         queryParams.append("offset", 0);
 
         let queryString = queryParams.toString();
+
         const results = await searchProperties(queryString);
-        setSearchResults(results.results);
-        sessionStorage.setItem(
-            "searchResultsState",
-            JSON.stringify({
-                searchResults: results.results,
-                totalResults: results.count,
-                nextPage: results.next,
-                previousPage: results.previous,
-            })
-        );
-        navigate("/results");
+        if (results.results) {
+            setSearchResults(results.results);
+            sessionStorage.setItem(
+                "searchResultsState",
+                JSON.stringify({
+                    searchResults: results.results,
+                    totalResults: results.count,
+                    nextPage: results.next,
+                    previousPage: results.previous,
+                })
+            );
+            setIsLoading(false)
+            navigate("/results");
+        } else {
+            setIsLoading(false)
+            message.error("Something went wrong, please try again later")
+        }
     };
 
-
     return (
-        <Layout style={{minHeight: '100vh', display: 'grid', gridTemplateRows: 'auto 1fr auto'}}>
-            <Header className="header">
-                <Navbar/>
-            </Header>
-            <Content className="content">
-                <Title style={{marginTop: '50px'}}>Your Rental,</Title>
-                <Title level={2} style={{paddingBottom: '50px'}}>
-                    Starts Here.
-                </Title>
-                <PropertySearchForm onFinish={onFinish}/>
-            </Content>
-            <Footer className="footer">
-                <MyFooter/>
-            </Footer>
-        </Layout>
+        <>
+            <Layout className="layout-index">
+                <Header className="header-index">
+                    <Navbar/>
+                </Header>
+                <Content className="content-index">
+                    <Row>
+                        <Col span={24}>
+                            <Title
+                                className="gradient-text"
+                                style={{fontFamily: 'Archivo', paddingTop: "50px", fontSize: "72px", textAlign: "center"}}>
+                                <span>Welcome to Your Next Adventure.</span>
+                            </Title>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            <Title
+                                className="gradient-text"
+                                style={{paddingBottom: '50px', fontFamily: 'Archivo', fontSize: "52px", textAlign: "center"}}>
+                                <span>新的旅程，就此开始。</span>
+                            </Title>
+                        </Col>
+                    </Row>
+                    <PropertySearchForm onFinish={onFinish} isLoading={isLoading}/>
+                    {Array.from({length: 100}).map((_, i) => (
+                        <div className="circle-container" key={i}>
+                            <div className="circle"></div>
+                        </div>
+                    ))}
+                </Content>
+                <Footer className="footer-index">
+                    <MyFooter/>
+                </Footer>
+            </Layout>
+        </>
     );
 }
 

@@ -15,7 +15,7 @@ const MyPropertiesLayout = () => {
     const {Header, Footer, Content} = Layout;
 
     return (
-        <Layout>
+        <Layout className="layout">
             <Header className="header">
                 <Navbar/>
             </Header>

@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
-import {Col, Row, Anchor, Space} from "antd";
+import {Anchor, Col, Row, Space} from "antd";
 
 import {isAuthed} from "../../services/auth";
 
@@ -33,19 +33,27 @@ const Navbar = () => {
             <Row className={"navbar"} align={"middle"} justify={"space-between"}
                  style={{margin: 0, width: "100%", maxWidth: "100%"}}>
                 <Col>
-                    <Anchor className={"logo"} affix={false}>
-                        <Anchor.Link href="/" title={<span style={{
-                            fontFamily: "sans-serif",
-                            fontSize: "40px",
-                        }}>Restify</span>} >
-                        </Anchor.Link>
-                    </Anchor>
+                    <Anchor
+                        className={"logo"}
+                        affix={false}
+                        items={[
+                            {
+                                key: 'logo',
+                                href: '/',
+                                title: (
+                                    <span style={{fontFamily: 'Archivo', fontSize: '40px', color: "white"}}>
+                                        Restify
+                                    </span>
+                                ),
+                            },
+                        ]}
+                    />
                 </Col>
                 <Col style={{paddingRight: "20px"}}>
                     {user ? (
                         <Space size="middle">
                             <AvatarButton user={user} handleLogout={handleUserChange}/>
-                            <NotificationIcon />
+                            <NotificationIcon/>
                         </Space>
                     ) : (
                         <LoginModal user={user} handleLogin={handleUserChange}/>

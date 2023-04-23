@@ -5,7 +5,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import ResultCard from "../features/IndexPage/ResultCard";
 import {searchProperties} from "../services/property";
 
-import "./layout.css"
+import "./search_results_layout.css"
 import MyFooter from "../components/Footer";
 
 const {Title} = Typography
@@ -45,22 +45,31 @@ const SearchResultsLayout = () => {
     const handlePagination = async (page) => {
         setCurrentPage(page);
 
-        const targetUrl = page > currentPage ? nextPage : previousPage;
-        navigate(`/results?page=${page}`);
-        const results = await searchProperties(targetUrl);
-        setSearchResults(results.results);
-        setTotalResults(results.count);
-        setNextPage(results.next);
-        setPreviousPage(results.previous);
+  const targetUrl = page > currentPage ? nextPage : previousPage;
+  navigate(`/results?page=${page}`, {
+    replace: true,
+    state: {
+      searchResults,
+      totalResults,
+      nextPage,
+      previousPage,
+    },
+  });
+  const results = await searchProperties(targetUrl);
+  setSearchResults(results.results);
+  setTotalResults(results.count);
+  setNextPage(results.next);
+  setPreviousPage(results.previous);
     };
 
     return (
-        <Layout style={{minHeight: '100vh', display: 'grid', gridTemplateRows: 'auto 1fr auto'}}>
-            <Header className="header">
+        <Layout className="layout-results">
+            <div className="layout-results-content">
+            <Header className="header-results">
                 <Navbar/>
             </Header>
-            <Content className="content">
-                <Title level={3} style={{marginTop: "40px"}}> {totalResults} results found </Title>
+            <Content className="content-results">
+                <Title level={1} style={{color: "white"}}> {totalResults} results found </Title>
                 <Divider/>
                 <Row gutter={[24, 24]} style={{padding: "0 30px"}}>
                     {searchResults.map((result) => (
@@ -69,20 +78,22 @@ const SearchResultsLayout = () => {
                         </Col>
                     ))}
                 </Row>
+                <Divider />
                 <div style={{textAlign: "center", padding: "16px"}}>
                     <Pagination
                         current={currentPage}
                         total={totalResults}
-                        pageSize={3}
+                        pageSize={6}
                         onChange={(page) => {
                             handlePagination(page);
                         }}
                     />
                 </div>
             </Content>
-            <Footer>
+            <Footer className="footer-results">
                 <MyFooter/>
             </Footer>
+            </div>
         </Layout>
     );
 };

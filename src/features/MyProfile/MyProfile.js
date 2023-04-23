@@ -6,6 +6,7 @@ import UserAvatar from './components/ProfileAvatar';
 import {isAuthed} from "../../services/auth";
 import {getUserInfo, getUserProfile, updateUserInfo, updateUserProfile} from "../../services/user";
 import AvatarContext from "../../context/AvatarContext";
+import useAuthRedirect from "../../hooks/useAuthRedirect";
 
 const {Title} = Typography
 
@@ -18,6 +19,8 @@ const MyProfile = () => {
     const [form] = Form.useForm();
     const {triggerRefetchAvatar} = useContext(AvatarContext);
     const screens = Grid.useBreakpoint()
+
+    useAuthRedirect(isAuthed)
 
     const toggleEdit = () => {
         setIsEditing(!isEditing);
@@ -109,7 +112,7 @@ const MyProfile = () => {
 
     return (
         <>
-            <Title level={3} style={{marginTop: '30px'}}> My Profile </Title>
+            <Title level={3} style={{paddingBottom: "20px"}}> My Profile </Title>
             <Divider/>
             <Row style={{marginTop: '20px'}}>
                 {screens.md ? (
@@ -128,7 +131,7 @@ const MyProfile = () => {
                                     loading={isLoading}
                                     style={{marginTop: '16px', marginRight: '20px'}}
                                 >
-                                    {isEditing ? (isLoading ? 'Updating...' : 'Update MyProfile') : 'Edit MyProfile'}
+                                    {isEditing ? (isLoading ? 'Updating...' : 'Update My Profile') : 'Edit My Profile'}
                                 </Button>
                                 {isEditing && (
                                     <Button type="primary" danger onClick={handleDiscardChanges}
@@ -145,7 +148,8 @@ const MyProfile = () => {
                             <UserAvatar
                                 userProfile={userProfile}
                                 isEditing={isEditing}
-                                setUploadedAvatar={setUploadedAvatar}/>
+                                setUploadedAvatar={setUploadedAvatar}
+                            />
                         </Col>
                         <Col span={24}  style={{ display: 'flex', justifyContent: 'center' }}>
                             <div style={{ width: '100%', maxWidth: '400px' , paddingLeft: '80px', paddingRight: '80px'}}>
@@ -157,24 +161,24 @@ const MyProfile = () => {
                             />
                             </div>
                         </Col>
-
-                            <Col span={24} style={{display: 'flex', justifyContent: 'center', marginTop: '16px'}}>
-                                <Button
-                                    type="primary"
-                                    onClick={isEditing ? handleSaveProfile : toggleEdit}
-                                    loading={isLoading}
-                                    style={{marginTop: '16px', marginRight: '20px'}}
-                                >
-                                    {isEditing ? (isLoading ? 'Updating...' : 'Update MyProfile') : 'Edit MyProfile'}
+                        <Col span={24} style={{display: 'flex', justifyContent: 'center', marginTop: '16px'}}>
+                            <Button
+                                type="primary"
+                                onClick={isEditing ? handleSaveProfile : toggleEdit}
+                                loading={isLoading}
+                                style={{marginTop: '16px', marginRight: '20px'}}
+                            >
+                                {isEditing ? (isLoading ? 'Updating...' : 'Update My Profile') : 'Edit My Profile'}
+                            </Button>
+                            {isEditing && (
+                                <Button type="primary"
+                                        danger
+                                        onClick={handleDiscardChanges}
+                                        style={{marginTop: '16px'}}>
+                                    Discard Changes
                                 </Button>
-                                {isEditing && (
-                                    <Button type="primary" danger onClick={handleDiscardChanges}
-                                            style={{marginTop: '16px'}}>
-                                        Discard Changes
-                                    </Button>
-                                )}
-                            </Col>
-
+                            )}
+                        </Col>
                     </>
                 )}
             </Row>

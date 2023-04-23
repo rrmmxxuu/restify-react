@@ -10,7 +10,6 @@ export const getMyReservations = (async (token) => {
                 Authorization: `Bearer ${token}`,
             },
         },);
-        console.log(response);
         return response.data
     } catch (error) {
         console.error(error)
@@ -53,11 +52,29 @@ export const createReservation = (async (token, reservation, propertyid) => {
         console.log(response)
         return response.data
     } catch (error) {
-        console.error("Error creating reservation", error)
+        console.error("Error creating MyReservations", error)
         throw error;
     }
 })
 
+export const updateReservation = (async (token, reservation) => {
+    const formData = new FormData()
+    Object.keys(reservation).forEach((key) => {
+        formData.append(key, reservation[key])
+    })
+    try {
+        const response = await axios.put(RESERVATION_API_URL + '/UD/' + reservation.id, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
+            },
+        },)
+        return response.data
+    } catch (error) {
+        console.error(error)
+        return error
+    }
+})
 
 export const deleteMyReservation = (async (token, reservationID) => {
     try {

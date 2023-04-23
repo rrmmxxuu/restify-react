@@ -4,7 +4,7 @@ import React from "react";
 
 import Navbar from "../features/Navbar/Navbar";
 import Sidebar from "../components/Sidebar";
-import MyReservations from "../features/reservation/MyReservations";
+import MyReservations from "../features/MyReservations/MyReservations";
 import MyFooter from "../components/Footer";
 
 

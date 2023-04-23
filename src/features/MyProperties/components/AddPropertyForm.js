@@ -1,5 +1,17 @@
 import React, {useState} from 'react';
-import {AutoComplete, Button, Form, Input, InputNumber, message, Modal, Select, Upload} from 'antd';
+import {
+    AutoComplete,
+    Button,
+    Divider,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    Select,
+    Typography,
+    Upload
+} from 'antd';
 import {PlusOutlined} from "@ant-design/icons";
 import {createProperty, uploadImages} from "../../../services/property";
 import {isAuthed} from "../../../services/auth";
@@ -7,7 +19,7 @@ import {amenityChoices, commonCities, propertyTypes, provinceChoices} from "../.
 
 const {Option} = Select;
 const {useForm} = Form
-
+const {Title} = Typography
 export const AddPropertyForm = ({onDiscard}) => {
     const [thumbnailUrl, setThumbnailUrl] = useState([]);
     const [thumbnailSelected, setThumbnailSelected] = useState(false);
@@ -99,178 +111,182 @@ export const AddPropertyForm = ({onDiscard}) => {
     </div>)
 
     return (
-        <Form layout="vertical" onFinish={handleSubmit} form={form}>
-            <Form.Item
-                label="Title"
-                name="title"
-                rules={[{required: true, message: 'Please enter the title'}]}
-            >
-                <Input/>
-            </Form.Item>
-
-            <Form.Item
-                label="Address"
-                name="address"
-                rules={[{required: true, message: 'Please enter the address'}]}
-            >
-                <Input/>
-            </Form.Item>
-
-            <Form.Item
-                label="City"
-                name="city"
-                rules={[{required: true, message: 'Please enter the city'}]}
-            >
-                <AutoComplete
-                    options={COMMON_CITIES()}
-                    filterOption={(inputValue, option) =>
-                        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                    }
+        <div style={{paddingRight: "100px", paddingLeft: "100px"}}>
+            <Title>Add Property</Title>
+            <Divider/>
+            <Form layout="vertical" onFinish={handleSubmit} form={form}>
+                <Form.Item
+                    label="Title"
+                    name="title"
+                    rules={[{required: true, message: 'Please enter the title'}]}
                 >
                     <Input/>
-                </AutoComplete>
-            </Form.Item>
+                </Form.Item>
 
-            <Form.Item
-                label="Province"
-                name="province"
-                rules={[{required: true, message: 'Please select the province'}]}
-            >
-                <Select
-                    showSearch
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[{required: true, message: 'Please enter the address'}]}
                 >
-                    {PROVINCE_CHOICES.map((province) => (
-                        <Option key={province.value} value={province.value}>
-                            {province.label}
-                        </Option>
-                    ))}
-                </Select>
-            </Form.Item>
+                    <Input/>
+                </Form.Item>
 
-            <Form.Item
-                label="Postal code"
-                name="postal_code"
-                rules={[{required: true, message: 'Please enter the postal code'},
-                    {
-                        pattern: /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/,
-                        message: 'Please enter a valid Canadian postal code',
-                    },
-                ]}
-            >
-                <Input maxLength={6} onChange={handlePostalCodeChange}/>
-            </Form.Item>
-
-            <Form.Item
-                label="Property type"
-                name="property_type"
-                rules={[{required: true, message: 'Please select the property_type'}]}
-            >
-                <Select>
-                    {PROPERTY_TYPES.map((type) => (
-                        <Option key={type.value} value={type.value}>
-                            {type.label}
-                        </Option>
-                    ))}
-                </Select>
-            </Form.Item>
-
-            <Form.Item
-                label="Price"
-                name="price"
-                rules={[{required: true, message: 'Please enter the price'},
-                ]}
-            >
-                <InputNumber prefix="CAD $" step={1} style={{width: '100%'}}/>
-            </Form.Item>
-
-            <Form.Item
-                label="Number of bedrooms"
-                name="num_bedrooms"
-                rules={[{required: true, message: 'Please enter the number of bedrooms'},
-                ]}
-            >
-                <InputNumber min={0} step={1} style={{width: '100%'}}/>
-            </Form.Item>
-
-            <Form.Item
-                label="Square feet"
-                name="sqft"
-                rules={[{required: true, message: 'Please enter the square feet'},
-                ]}
-            >
-                <InputNumber min={0} step={1} style={{width: '100%'}}/>
-            </Form.Item>
-
-            <Form.Item
-                label="Amenities available"
-                name="amenities"
-            >
-                <Select
-                    mode="multiple"
-                    style={{width: '100%'}}
-                    placeholder="Select amenities available"
-                    optionLabelProp="label"
+                <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[{required: true, message: 'Please enter the city'}]}
                 >
-                    {AMENITY_CHOICES.map((amenities) => (
-                        <Option key={amenities.value} value={amenities.value} label={amenities.label}>
-                            {amenities.label}
-                        </Option>
-                    ))}
-                </Select>
-            </Form.Item>
-
-            <Form.Item
-                label="Thumbnail"
-                name="thumbnail"
-                valuePropName="file"
-                getValueFromEvent={(e) => e.file}
-                required={true}
-                rules={[{
-                    validator: (_, value) => {
-                        if (thumbnailSelected) {
-                            return Promise.resolve();
+                    <AutoComplete
+                        options={COMMON_CITIES()}
+                        filterOption={(inputValue, option) =>
+                            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                         }
-                        return Promise.reject(new Error('Please upload a thumbnail'));
-                    },
-                },
-                ]}
-            >
-                <Upload
-                    accept="image/*"
-                    listType="picture-card"
-                    fileList={thumbnailUrl}
-                    beforeUpload={handleThumbnailPreview}
-                    onChange={handleThumbnailChange}
-                    maxCount={1}>
-                    {thumbnailUrl.length >= 1 ? null : uploadButton}
-                </Upload>
-            </Form.Item>
+                    >
+                        <Input/>
+                    </AutoComplete>
+                </Form.Item>
 
-            <Form.Item label="Property Images" name="property_images">
-                <Upload
-                    accept="image/*"
-                    listType="picture-card"
-                    fileList={imageList}
-                    onChange={handleImageChange}
-                    beforeUpload={handleImagePreview}
-                    multiple
+                <Form.Item
+                    label="Province"
+                    name="province"
+                    rules={[{required: true, message: 'Please select the province'}]}
                 >
-                    {uploadButton}
-                </Upload>
-            </Form.Item>
+                    <Select
+                        showSearch
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                    >
+                        {PROVINCE_CHOICES.map((province) => (
+                            <Option key={province.value} value={province.value}>
+                                {province.label}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
 
-            <Form.Item>
-                <Button type="primary" htmlType="submit" onSubmit={handleSubmit} loading={loading}>
-                    {loading ? "Submitting..." : "Submit"}
-                </Button>
-                <Button type="primary" danger onClick={handleDiscard} style={{marginLeft: '20px'}}>
-                    Discard
-                </Button>
-            </Form.Item>
-        </Form>
+                <Form.Item
+                    label="Postal code"
+                    name="postal_code"
+                    rules={[{required: true, message: 'Please enter the postal code'},
+                        {
+                            pattern: /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/,
+                            message: 'Please enter a valid Canadian postal code',
+                        },
+                    ]}
+                >
+                    <Input maxLength={6} onChange={handlePostalCodeChange}/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Property type"
+                    name="property_type"
+                    rules={[{required: true, message: 'Please select the property_type'}]}
+                >
+                    <Select>
+                        {PROPERTY_TYPES.map((type) => (
+                            <Option key={type.value} value={type.value}>
+                                {type.label}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    label="Price"
+                    name="price"
+                    rules={[{required: true, message: 'Please enter the price'},
+                    ]}
+                >
+                    <InputNumber prefix="CAD $" step={1} style={{width: '100%'}}/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Number of bedrooms"
+                    name="num_bedrooms"
+                    rules={[{required: true, message: 'Please enter the number of bedrooms'},
+                    ]}
+                >
+                    <InputNumber min={0} step={1} style={{width: '100%'}}/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Square feet"
+                    name="sqft"
+                    rules={[{required: true, message: 'Please enter the square feet'},
+                    ]}
+                >
+                    <InputNumber min={0} step={1} style={{width: '100%'}}/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Amenities available"
+                    name="amenities"
+                >
+                    <Select
+                        mode="multiple"
+                        style={{width: '100%'}}
+                        placeholder="Select amenities available"
+                        optionLabelProp="label"
+                    >
+                        {AMENITY_CHOICES.map((amenities) => (
+                            <Option key={amenities.value} value={amenities.value} label={amenities.label}>
+                                {amenities.label}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    label="Thumbnail"
+                    name="thumbnail"
+                    valuePropName="file"
+                    getValueFromEvent={(e) => e.file}
+                    required={true}
+                    rules={[{
+                        validator: (_) => {
+                            if (thumbnailSelected) {
+                                return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('Please upload a thumbnail'));
+                        },
+                    },
+                    ]}
+                >
+                    <Upload
+                        accept="image/*"
+                        listType="picture-card"
+                        fileList={thumbnailUrl}
+                        beforeUpload={handleThumbnailPreview}
+                        onChange={handleThumbnailChange}
+                        maxCount={1}>
+                        {thumbnailUrl.length >= 1 ? null : uploadButton}
+                    </Upload>
+                </Form.Item>
+
+                <Form.Item label="Property Images" name="property_images">
+                    <Upload
+                        accept="image/*"
+                        listType="picture-card"
+                        fileList={imageList}
+                        onChange={handleImageChange}
+                        beforeUpload={handleImagePreview}
+                        multiple
+                    >
+                        {uploadButton}
+                    </Upload>
+                </Form.Item>
+
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" onSubmit={handleSubmit} loading={loading}>
+                        {loading ? "Submitting..." : "Submit"}
+                    </Button>
+                    <Button type="primary" danger onClick={handleDiscard} style={{marginLeft: '20px'}}>
+                        Discard
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
     );
 };
 

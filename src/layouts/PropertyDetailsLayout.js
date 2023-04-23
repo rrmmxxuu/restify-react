@@ -31,7 +31,7 @@ const PropertyDetailsLayout = () => {
     }
 
     return (
-        <Layout style={{minHeight: '100vh', display: 'grid', gridTemplateRows: 'auto 1fr auto'}}>
+        <Layout className="layout">
             <Header className="header">
                 <Navbar/>
             </Header>

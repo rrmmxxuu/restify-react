@@ -2,7 +2,9 @@ import axios from "axios";
 import {API_BASE_URL} from "./backend_switch";
 
 const USER_INFO_URL = API_BASE_URL() + '/api/accounts/user';
+const USER_INFO_PUBLIC_URL = API_BASE_URL() + '/api/accounts/user-public'
 const PROFILE_URL = API_BASE_URL() + '/api/accounts/profile';
+const PROFILE_PUBLIC_URL = API_BASE_URL() + '/api/accounts/user-profile-public'
 
 export const getUserInfo = async (token) => {
     try {
@@ -18,6 +20,16 @@ export const getUserInfo = async (token) => {
     }
 };
 
+export const getUserInfoPublic = async (user_id) => {
+     try {
+        const response = await axios.get(USER_INFO_PUBLIC_URL + '/' + user_id);
+        return response.data
+    } catch (error) {
+        console.error(error)
+        return false
+    }
+}
+
 export const getUserProfile = async (token) => {
     try {
         const response = await axios.get(PROFILE_URL, {
@@ -31,6 +43,18 @@ export const getUserProfile = async (token) => {
         throw error;
     }
 }
+
+export const getUserProfilePublic = async (user_id) => {
+     try {
+        const response = await axios.get(PROFILE_PUBLIC_URL + '/' + user_id);
+        return response.data
+    } catch (error) {
+        console.error(error)
+        return false
+    }
+}
+
+
 
 export const updateUserInfo = async (token, info) => {
     try {
@@ -82,4 +106,6 @@ export const updateUserProfile = async (token, profile) => {
         throw error;
     }
 }
+
+
 

@@ -20,6 +20,9 @@ const LoginForm = ({onLogin}) => {
             message.success("Login Successful. Welcome, " + userinfo.first_name + "!", 5)
             onLogin()
             setLoading(false)
+            setTimeout(() => {
+            window.location.reload()
+        }, 1500);
         } else if (login_result === '401') {
             message.error("Your credential does not match our records!", 5)
         } else if (login_result === 'ERR_NETWORK') {
@@ -27,30 +30,7 @@ const LoginForm = ({onLogin}) => {
         } else {
             message.error("Something went wrong... Please try again later.", 5)
         }
-
         setLoading(false)
-        // login(values.email, values.password, values.remember)
-        //     .then(async (response) => {
-        //         // const first_name = JSON.parse(localStorage.getItem('userinfo')).first_name
-        //         const token = await isAuthed()
-        //         const userinfo = await getUserInfo(token)
-        //         message.success("Login Successful. Welcome, " + userinfo.first_name + "!", 5)
-        //         onLogin()
-        //     })
-        //     .catch((error) => {
-        //         if (error.response) {
-        //             if (error.response.status === 401) {
-        //                 message.error("Your credential does not match our records!", 5)
-        //             }
-        //         } else {
-        //             console.error((error))
-        //             message.error("Something went wrong... Please try again later.")
-        //         }
-        //     })
-        //     .finally(() => {
-        //         setLoading(false)
-        //     })
-
     }
 
     return (

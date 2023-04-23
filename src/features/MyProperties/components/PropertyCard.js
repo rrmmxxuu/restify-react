@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from 'antd';
+import {Card, Rate, Tooltip} from 'antd';
 import {DeleteOutlined, EditOutlined, EyeOutlined} from '@ant-design/icons';
 
 import "../../../card.css"
@@ -14,14 +14,31 @@ export const PropertyCard = ({property, onView, onEdit, onDelete}) => (
             </div>
         }
         actions={[
-            <EyeOutlined key="view" onClick={() => onView(property.property_id)}/>,
-            <EditOutlined key="edit" onClick={() => onEdit(property.property_id)}/>,
-            <DeleteOutlined key="delete" onClick={() => onDelete(property.property_id)}/>,
+            <Tooltip title="View">
+                <EyeOutlined key="view" onClick={() => onView(property.property_id)}/>
+            </Tooltip>,
+            <Tooltip title="Edit">
+                <EditOutlined key="edit" onClick={() => onEdit(property.property_id)}/>
+            </Tooltip>,
+            <Tooltip title="Delete">
+                <DeleteOutlined key="delete" onClick={() => onDelete(property.property_id)}/>
+            </Tooltip>,
         ]}
     >
         <Meta
             title={property.title}
-            description={property.address}
+            description={
+                <>
+                    {property.address}
+                    <br/>
+                    <Rate
+                        disabled
+                        allowHalf
+                        value={parseFloat(property.rating) || 0}
+                    />
+                    {property.rating === null && <span style={{marginLeft: "8px"}}>No rating yet</span>}
+                </>
+            }
         />
     </Card>
 );

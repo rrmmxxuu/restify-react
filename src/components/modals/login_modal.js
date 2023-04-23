@@ -11,11 +11,10 @@ const LoginModal = ({handleLogin}) => {
         setActiveTab("login")
     };
 
-    const handleLoginSuccess = (event) => {
+    const handleLoginSuccess = () => {
         setTimeout(() => {
             setIsModalOpen(false);
             handleLogin();
-            //window.location.reload()
         }, 1000)
 
     };
