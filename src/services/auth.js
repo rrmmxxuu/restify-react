@@ -1,8 +1,8 @@
 import axios from "axios";
 import {API_BASE_URL} from "./backend_switch";
 
-const REG_API_URL =  '/api/accounts/register';
-const AUTH_API_URL = '/api/auth/token';
+const REG_API_URL = API_BASE_URL() + '/api/accounts/register';
+const AUTH_API_URL = API_BASE_URL() + '/api/auth/token';
 
 export const signup = (email, first_name, last_name, password) => {
     return axios
