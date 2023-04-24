@@ -13,6 +13,11 @@ const PropertySearchForm = ({onFinish, isLoading}) => {
     const AMENITY_CHOICES = amenityChoices();
     const screens = Grid.useBreakpoint()
 
+    const disabledDate = (current) => {
+        // Can not select days before today
+        return current && current < dayjs().startOf('day');
+    };
+
     return (
         <Form onFinish={(values) => onFinish(values)}>
             <Row gutter={16}>
@@ -53,15 +58,15 @@ const PropertySearchForm = ({onFinish, isLoading}) => {
                         name="dateRange"
                         initialValue={[dayjs(), dayjs().add(5, 'd')]}
                         rules={[
-                                   {
-                                       required: true,
-                                       message: "Please select a date range",
-                                   },
-                               ]}
+                            {
+                                required: true,
+                                message: "Please select a date range",
+                            },
+                        ]}
                     >
                         <DatePicker.RangePicker
                             style={{width: "100%"}}
-                            initialValue={[dayjs(), dayjs().add(5, 'd')]}
+                            disabledDate={disabledDate}
                             size="large"
                         />
                     </Form.Item>
@@ -96,7 +101,7 @@ const PropertySearchForm = ({onFinish, isLoading}) => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row style={{ display: 'flex', justifyContent: 'center' }}>
+            <Row style={{display: 'flex', justifyContent: 'center'}}>
                 <Col span={screens.md ? 4 : 24}>
                     <Form.Item name="sortBy" initialValue="rate_high2low">
                         <Select placeholder="Results order by" size="large">

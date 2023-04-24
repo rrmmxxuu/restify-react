@@ -4,12 +4,18 @@ import {createReservation} from "../../../services/reservation";
 import {isAuthed} from "../../../services/auth";
 import {getUserInfo} from "../../../services/user";
 import {sendNotification} from "../../../services/notification";
+import dayjs from "dayjs";
 
 const {useForm} = Form
 
 export const AddReservationForm = ({onDiscard, property}) => {
     const [loading, setLoading] = useState(false)
     const [form] = useForm()
+
+    const disabledDate = (current) => {
+        // Can not select days before today
+        return current && current < dayjs().startOf('day');
+    };
 
     const handleSubmit = async (values) => {
         setLoading(true);
@@ -51,7 +57,7 @@ export const AddReservationForm = ({onDiscard, property}) => {
                     required: true,
                     message: "Please select a date range",
                 },]}>
-                    <DatePicker.RangePicker/>
+                    <DatePicker.RangePicker disabledDate={disabledDate}/>
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" onSubmit={handleSubmit} loading={loading}>
