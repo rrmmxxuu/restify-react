@@ -1,6 +1,6 @@
 export const API_BASE_URL = () => {
-    const relative = false
-    const gc = true
+    const relative = true
+    const gc = false
     if (relative) {
         return ''
     }
