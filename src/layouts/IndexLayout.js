@@ -91,8 +91,8 @@ const IndexLayout = () => {
                         <Col span={24}>
                             <Title
                                 className="gradient-text"
-                                style={{fontFamily: 'Archivo', paddingTop: "50px", fontSize: "72px", textAlign: "center"}}>
-                                <span>Welcome to Your Next Adventure.</span>
+                                style={{fontFamily: 'Archivo', paddingTop: "50px", fontSize: "60px", textAlign: "center"}}>
+                                <span>Welcome to Your Next Adventure</span>
                             </Title>
                         </Col>
                     </Row>
@@ -100,7 +100,7 @@ const IndexLayout = () => {
                         <Col span={24}>
                             <Title
                                 className="gradient-text"
-                                style={{paddingBottom: '50px', fontFamily: 'Archivo', fontSize: "52px", textAlign: "center"}}>
+                                style={{paddingBottom: '50px', fontFamily: 'Archivo', fontSize: "50px", textAlign: "center"}}>
                                 <span>新的旅程，就此开始。</span>
                             </Title>
                         </Col>
